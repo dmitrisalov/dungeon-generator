@@ -15,8 +15,13 @@ public class DungeonGenerator : MonoBehaviour {
     [Range(1, 64)]
     public int moduleLimit;
     public int seed;
+    public bool randomize;
+
+    private List<Transform> unconnectedExits;
 
     public void GenerateDungeon(bool randomize) {
+        DestroyAllChildren();
+
         // Chooses a random seed if desired.
         if (randomize) {
             seed = Random.Range(-SEED_RANGE, SEED_RANGE);
@@ -25,12 +30,77 @@ public class DungeonGenerator : MonoBehaviour {
         // Set the seed for the randomizer.
         Random.InitState(seed);
 
-        // Instantiate a starting module, which should be a room.
-        GameObject prefab = GetRandomPrefab(ROOM);
+        // Instantiate a starting room.
+        GameObject module = Object.Instantiate(GetRandomPrefab(ROOM), Vector3.zero, 
+            Quaternion.identity);
+        module.transform.parent = gameObject.transform;
+        
+        // Instantiate a list to store exits to which modules may be connected.
+        unconnectedExits = new List<Transform>();
+        AddModuleUnconnectedExits(module);
 
-        for (int i = 0; i < moduleLimit - 1; i++) {
+        // Add modules until the module limit is hit.
+        Vector3 position = new Vector3(25, 0, 0);
+        int numModules = 1;
+        while (numModules < moduleLimit) {
+            // Create a copy of unconnectedExits to be able to loop through and add to the list.
+            List<Transform> currentExits = new List<Transform>(unconnectedExits);
+
+            // Go through each unconnected exit.
+            foreach (Transform exit in currentExits) {
+                module = InstantiateCorrectPrefab(exit);
+                ConnectModuleToExit(exit, module);
+
+                // Add the hallways exits to the unconnected exits list.
+                AddModuleUnconnectedExits(module);
+
+                // Remove the exit from the list since it is now connected.
+                unconnectedExits.Remove(exit);
+
+                // Check if the module limit was hit.
+                numModules++;
+                if (numModules >= moduleLimit) {
+                    break;
+                }
+            }
+        }
+    }
+
+    private GameObject InstantiateCorrectPrefab(Transform exit) {
+        // Get the tag for the module to which the exit is connected.
+        string exitModuleType = exit.parent.gameObject.tag;
+
+        GameObject prefab = null;
+
+        if (exitModuleType == "Room") {
+            // Spawn a hallway.
+            prefab = GetRandomPrefab(HALLWAY);
+        }
+        else if (exitModuleType == "Hallway") {
+            // Spawn either a room or a junction.
+            if (Random.Range(0, 2) == 0) {
+                prefab = GetRandomPrefab(ROOM);
+            }
+            else {
+                prefab = GetRandomPrefab(JUNCTION);
+            }
 
         }
+        else if (exitModuleType == "Junction") {
+            // Spawn a hallway.
+            prefab = GetRandomPrefab(HALLWAY);
+        }
+
+        // Instantiate the prefab and set it as a child of the DungeonGenerator's game object.
+        GameObject module = Object.Instantiate(prefab, Vector3.zero, Quaternion.identity);
+        module.transform.parent = gameObject.transform;
+
+        return module;
+    }
+
+    private void ConnectModuleToExit(Transform exit, GameObject module) {
+        module.transform.rotation = exit.rotation;
+        module.transform.position = exit.position;
     }
 
     private GameObject GetRandomPrefab(int type) {
@@ -48,5 +118,37 @@ public class DungeonGenerator : MonoBehaviour {
         }
 
         return prefab;
+    }
+
+    private void AddModuleUnconnectedExits(GameObject module) {
+        // Go through each child object of the module.
+        foreach (Transform child in module.transform) {
+            // Check if the child is an exit.
+            if (child.name == "Exit") {
+                unconnectedExits.Add(child);
+            }
+        }
+    }
+
+    public void DestroyAllChildren() {
+        // Create an array of all the children of the object (modules of the dungeon).
+        Transform[] children = new Transform[gameObject.transform.childCount];
+        int arrayIndex = 0;
+        foreach (Transform child in gameObject.transform) {
+            children[arrayIndex] = child;
+            arrayIndex++;
+        }
+
+        // Destroy all the transforms in the array.
+        for (int i = 0; i < children.GetLength(0); i++) {
+            GameObject.DestroyImmediate(children[i].gameObject);
+        }
+
+        /*  
+            Note: The reason we don't directly loop through the children of the transform and
+            destroy them from there is because that alters the underlying list of children. When we
+            iterate through the list and destroy elements of it, the list is shortened, which causes
+            the index to increase by 1. This results in destroying only odd children, or only half.
+        */
     }
 }
