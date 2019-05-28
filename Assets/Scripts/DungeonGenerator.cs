@@ -12,7 +12,7 @@ public class DungeonGenerator : MonoBehaviour {
     public GameObject[] junctionPrefabs;
     public GameObject[] roomPrefabs;
 
-    [Range(1, 64)]
+    [Range(1, 128)]
     public int moduleLimit;
     public int seed;
     public bool randomize;
@@ -51,7 +51,14 @@ public class DungeonGenerator : MonoBehaviour {
                 module = InstantiateCorrectPrefab(exit);
                 ConnectModuleToExit(exit, module);
 
-                // Add the hallways exits to the unconnected exits list.
+                // Check for collisions with other modules.
+                if (module.GetComponent<Module>().CollidesWithModules(exit.parent.gameObject)) {
+                    // Destroy the module and continue to the next iteration.
+                    GameObject.DestroyImmediate(module);
+                    continue;
+                }
+
+                // Add the modules exits to the unconnected exits list.
                 AddModuleUnconnectedExits(module);
 
                 // Remove the exit from the list since it is now connected.

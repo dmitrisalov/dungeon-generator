@@ -39,6 +39,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3338128747858703363}
+  - component: {fileID: 1051378764272418819}
   m_Layer: 0
   m_Name: Module_Junction_1
   m_TagString: Junction
@@ -64,6 +65,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1051378764272418819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7426403791294948693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba48be0986ac89243a51fb5edbe4d68f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mesh: {fileID: 7972463034478830895}
+  exits:
+  - {fileID: 9202373236847509188}
+  - {fileID: 8271914715881680307}
+  - {fileID: 6214642749653286502}
 --- !u!1 &7972463034478830895
 GameObject:
   m_ObjectHideFlags: 0

@@ -348,6 +348,6 @@ MonoBehaviour:
   - {fileID: 2140964940335791866, guid: 56490a5bd7b67bb4b914fb1faa369162, type: 3}
   - {fileID: 1266374184883863172, guid: 57b41271f7a9e07489239f0843bdd92a, type: 3}
   - {fileID: 2001628838836892572, guid: cb510d3f5d58380438aa0a38d4610bc6, type: 3}
-  moduleLimit: 64
-  seed: -182850
-  randomize: 1
+  moduleLimit: 16
+  seed: 181404
+  randomize: 0

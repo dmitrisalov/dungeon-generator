@@ -39,6 +39,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6573562802477818105}
+  - component: {fileID: 4232565729272335194}
   m_Layer: 0
   m_Name: Module_Room_2
   m_TagString: Room
@@ -63,6 +64,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4232565729272335194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432507581867037930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba48be0986ac89243a51fb5edbe4d68f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mesh: {fileID: 9169864304636208710}
+  exits:
+  - {fileID: 1382674848157954330}
+  - {fileID: 2205597590472406325}
 --- !u!1 &2205597590472406325
 GameObject:
   m_ObjectHideFlags: 0
